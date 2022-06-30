@@ -49,20 +49,33 @@ namespace GmailClient
             txtboxPassword.Password = password;
         }
 
-        private void buttonLogin_Click(object sender, RoutedEventArgs e)
+        private async void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
             using (var client = new ImapClient(new ProtocolLogger("imap.log")))
             {
-                // Підключення клієнта із заданим сервером і портом
-                client.Connect(server, port, SecureSocketOptions.SslOnConnect);
+                // Асинхронне підключення клієнта із заданим сервером і портом
+                await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
                 
-                // Спробуємо автентифікуватися по введеним логіну і паролю
+                // Спробуємо асинхронно автентифікуватися по введеним логіну і паролю
                 try
                 {
-                    client.Authenticate(txtboxUsername.Text, txtboxPassword.Password);
+                    //client.Authenticate(txtboxUsername.Text, txtboxPassword.Password);
+                    await client.AuthenticateAsync(txtboxUsername.Text, txtboxPassword.Password);
+                    
                     ///////////////////////////// [ DEBUGGING ] /////////////////////////////
                     StringBuilder stringBuilder = new StringBuilder();
-                    foreach (var item in client.GetFolders(client.PersonalNamespaces[0]))
+
+                    //var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
+                    //foreach (var folder in folders)
+                    //{
+                    //    MessageBox.Show($"{folder.FullName}");
+                    //}
+                    //client.GetFoldersAsync(cancellationToken => ":asda")
+                    
+                    var all = StatusItems.Unread;
+
+                    //foreach (var item in client.GetFolders(client.PersonalNamespaces[0]))
+                    foreach (var item in await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true))
                     {
                         stringBuilder.AppendLine(item.Name);
                     }
@@ -76,7 +89,7 @@ namespace GmailClient
                 }
 
                 // Відключення клієнта
-                client.Disconnect(true);
+                await client.DisconnectAsync(true);
             }
         }
     }
