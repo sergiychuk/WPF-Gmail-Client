@@ -29,8 +29,8 @@ namespace GmailClient
         string server = ConfigurationManager.AppSettings["gmail_server"]; // sets the server address
         int port = int.Parse(ConfigurationManager.AppSettings["gmail_port"]); //sets the server port
 
-        private string username;
-        private string password;
+        private static string username = "dspeakers8@gmail.com";
+        private static string password = "xgafnlmijfgputgr";
         bool autoFill = true;  // Вимкни цей флаг що б відключити автозаповнення данних!!!!
 
         public LoginWindow()
@@ -51,7 +51,6 @@ namespace GmailClient
 
         private void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
-            StringBuilder stringBuilder = new StringBuilder();
             using (var client = new ImapClient(new ProtocolLogger("imap.log")))
             {
                 // Підключення клієнта із заданим сервером і портом
@@ -62,6 +61,7 @@ namespace GmailClient
                 {
                     client.Authenticate(txtboxUsername.Text, txtboxPassword.Password);
                     ///////////////////////////// [ DEBUGGING ] /////////////////////////////
+                    StringBuilder stringBuilder = new StringBuilder();
                     foreach (var item in client.GetFolders(client.PersonalNamespaces[0]))
                     {
                         stringBuilder.AppendLine(item.Name);
@@ -69,10 +69,13 @@ namespace GmailClient
                     MessageBox.Show(stringBuilder.ToString(), "FOLDERS");
                     ///////////////////////////// [ DEBUGGING ] /////////////////////////////
                 }
+                // Ловимо помилку при невдалому підключенні
                 catch (AuthenticationException ex)
                 {
                     MessageBox.Show($"{ex.Message}", "Authentication error");
                 }
+
+                // Відключення клієнта
                 client.Disconnect(true);
             }
         }
