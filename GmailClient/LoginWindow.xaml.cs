@@ -29,8 +29,8 @@ namespace GmailClient
         string server = ConfigurationManager.AppSettings["gmail_server"]; // sets the server address
         int port = int.Parse(ConfigurationManager.AppSettings["gmail_port"]); //sets the server port
 
-        private string username = "dspeakers8@gmail.com";
-        private string password = "xgafnlmijfgputgr";
+        private string username;
+        private string password;
         bool autoFill = true;  // Вимкни цей флаг що б відключити автозаповнення данних!!!!
 
         public LoginWindow()
