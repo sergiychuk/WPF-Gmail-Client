@@ -19,6 +19,115 @@
         RenderOptions.EdgeMode="Aliased"
         RenderOptions.BitmapScalingMode="HighQuality">
     <Grid>
-        
+        <materialDesign:Card>
+            <TabControl materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
+                        SnapsToDevicePixels="True"
+                        Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                        TabStripPlacement="Left">
+                <materialDesign:NavigationRailAssist.FloatingContent>
+                    <Button Margin="8"
+                            Content="{materialDesign:PackIcon Kind=Plus}"
+                            Style="{StaticResource MaterialDesignFloatingActionAccentButton}" />
+                </materialDesign:NavigationRailAssist.FloatingContent>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Width="auto" Height="auto">
+                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Inbox" />
+                            <TextBlock HorizontalAlignment="Center" Text="Inbox" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel Margin="10">
+                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Inbox" />
+                        <ListBox IsEnabled="{Binding IsChecked, ElementName=EnableListBox}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <TextBlock Text="Plain" />
+                            <TextBlock Text="Old" />
+                            <TextBlock Text="ListBox" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                            <TextBlock Text="Full of junk" />
+                        </ListBox>
+                        <!--<TextBlock>
+                            <Run Text="Here will be all incoming messages" />
+                            <LineBreak />
+                            <LineBreak />
+                            --><!--<Run FontStyle="Italic">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>--><!--
+                        </TextBlock>-->
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Width="auto" Height="auto">
+                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Send" />
+                            <TextBlock HorizontalAlignment="Center" Text="Sended" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel Margin="16">
+                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Sended messages" />
+                        <TextBlock>
+                            <Run Text="tab 2 content. Default look and behaviors." />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run FontStyle="Italic">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>
+                        </TextBlock>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Width="auto" Height="auto">
+                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="AlertOctagon" />
+                            <TextBlock HorizontalAlignment="Center" Text="Spam" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel Margin="16">
+                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Spam and other trash" />
+                        <TextBlock>
+                            <Run Text="tab 3 content. Default look and behaviors." />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run FontStyle="Italic"> Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>
+                        </TextBlock>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Width="auto" Height="auto">
+                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Delete" />
+                            <TextBlock HorizontalAlignment="Center" Text="Deleted" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel Margin="16">
+                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Deleted messages" />
+                        <TextBlock> 
+                            <Run Text="Here will be deleted messages." />
+                            <LineBreak />
+                            <LineBreak />
+                            <!--<Run FontStyle="Italic"> Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>-->
+                        </TextBlock>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </materialDesign:Card>
     </Grid>
 </Window>
