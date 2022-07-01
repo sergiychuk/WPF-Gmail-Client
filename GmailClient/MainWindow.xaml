@@ -18,7 +18,7 @@
         Icon="/Resources/gmail-icon.png"
         RenderOptions.EdgeMode="Aliased"
         RenderOptions.BitmapScalingMode="HighQuality">
-    <UniformGrid>
+    <Grid>
         
-    </UniformGrid>
+    </Grid>
 </Window>
