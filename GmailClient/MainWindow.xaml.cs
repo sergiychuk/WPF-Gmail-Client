@@ -43,7 +43,7 @@ namespace GmailClient
             password = _password;
 
             ///////////////////////////// [ DEBUGGING ] /////////////////////////////
-            this.Title = $"Username: {username}, Password: {password}";
+            //this.Title = $"Username: {username}, Password: {password}";
         }
 
         public void FetchData()
