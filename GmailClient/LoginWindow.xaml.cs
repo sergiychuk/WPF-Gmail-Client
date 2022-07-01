@@ -31,7 +31,7 @@ namespace GmailClient
 
         private readonly string username = "dspeakers8@gmail.com";
         private readonly string password = "xgafnlmijfgputgr";
-        bool autoFill = true;  // Вимкни цей флаг що б відключити автозаповнення данних!!!!
+        private bool autoFill = true;  // Вимкни цей флаг що б відключити автозаповнення данних!!!!
 
         public LoginWindow()
         {
@@ -51,7 +51,8 @@ namespace GmailClient
 
         private async void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
-            using (var client = new ImapClient(new ProtocolLogger("imap.log")))
+            //using (var client = new ImapClient(new ProtocolLogger("imap.log")))
+            using (var client = new ImapClient())
             {
                 // Асинхронне підключення клієнта із заданим сервером і портом
                 await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
@@ -61,25 +62,35 @@ namespace GmailClient
                 {
                     //client.Authenticate(txtboxUsername.Text, txtboxPassword.Password);
                     await client.AuthenticateAsync(txtboxUsername.Text, txtboxPassword.Password);
-                    
+
+                    // Якщо успішна автентифікація то передаємо дані для логіну у вікно MainWindow і запускаскаємо його закривши це вікно
+                    if (client.IsAuthenticated)
+                    {
+                        MainWindow mainWindow = new MainWindow(txtboxUsername.Text, txtboxPassword.Password);
+                        // Відключення клієнта
+                        await client.DisconnectAsync(true);
+                        mainWindow.Show();
+                        this.Close();
+                    }
+
                     ///////////////////////////// [ DEBUGGING ] /////////////////////////////
-                    StringBuilder stringBuilder = new StringBuilder();
+                    //MessageBox.Show($"{client.IsAuthenticated}");
+                    //StringBuilder stringBuilder = new StringBuilder();
 
                     //var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
                     //foreach (var folder in folders)
                     //{
                     //    MessageBox.Show($"{folder.FullName}");
                     //}
-                    //client.GetFoldersAsync(cancellationToken => ":asda")
                     
-                    var all = StatusItems.Unread;
+                    //var all = StatusItems.Recent;
 
                     //foreach (var item in client.GetFolders(client.PersonalNamespaces[0]))
-                    foreach (var item in await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true))
-                    {
-                        stringBuilder.AppendLine(item.Name);
-                    }
-                    MessageBox.Show(stringBuilder.ToString(), "FOLDERS");
+                    //foreach (var item in await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true))
+                    //{
+                    //    stringBuilder.AppendLine(item.Name);
+                    //}
+                    //MessageBox.Show(stringBuilder.ToString(), "FOLDERS");
                     ///////////////////////////// [ DEBUGGING ] /////////////////////////////
                 }
                 // Ловимо помилку при невдалому підключенні
@@ -89,7 +100,7 @@ namespace GmailClient
                 }
 
                 // Відключення клієнта
-                await client.DisconnectAsync(true);
+                //await client.DisconnectAsync(true);
             }
         }
     }
