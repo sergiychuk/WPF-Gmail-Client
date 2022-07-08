@@ -73,24 +73,31 @@ namespace GmailClient
                         this.Close();
                     }
 
-                    ///////////////////////////// [ DEBUGGING ] /////////////////////////////
-                    //MessageBox.Show($"{client.IsAuthenticated}");
-                    //StringBuilder stringBuilder = new StringBuilder();
-
+                    //var all = StatusItems.Recent;
                     //var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
                     //foreach (var folder in folders)
                     //{
                     //    MessageBox.Show($"{folder.FullName}");
                     //}
-                    
+
+                    //var uids = client.Inbox.Search(SearchQuery.All);
+                    //var messages = uids.Select(x=>client.Inbox.GetMessage(x));
+                    //var sortedMessages = messages.OrderByDescending(x => x.Date);
+
+                    ///////////////////////////// [ DEBUGGING ] /////////////////////////////
+                    //StringBuilder stringBuilder = new StringBuilder();
                     //var all = StatusItems.Recent;
+                    //var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
+
+
+                    //MessageBox.Show(stringBuilder.ToString(), "MESSAGES");
+
 
                     //foreach (var item in client.GetFolders(client.PersonalNamespaces[0]))
                     //foreach (var item in await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true))
                     //{
                     //    stringBuilder.AppendLine(item.Name);
                     //}
-                    //MessageBox.Show(stringBuilder.ToString(), "FOLDERS");
                     ///////////////////////////// [ DEBUGGING ] /////////////////////////////
                 }
                 // Ловимо помилку при невдалому підключенні
