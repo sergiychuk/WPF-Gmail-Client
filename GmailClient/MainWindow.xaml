@@ -19,7 +19,15 @@
         RenderOptions.EdgeMode="Aliased"
         RenderOptions.BitmapScalingMode="HighQuality">
     <Grid>
-        <materialDesign:Card>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox Name="listbox_folders" Grid.Column="0" Background="Aquamarine" MouseDoubleClick="RetriveMessages"/>
+        <ListBox Grid.Column="1" Name="listbox_messages" Background="AntiqueWhite"
+                 DisplayMemberPath="Subject" ItemsSource="{Binding}" SelectedValuePath="Id"
+                 MouseDoubleClick="OpenMessage"/>
+        <!--<materialDesign:Card>
             <TabControl materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
                         SnapsToDevicePixels="True"
                         Style="{StaticResource MaterialDesignNavigationRailTabControl}"
@@ -38,45 +46,18 @@
                     </TabItem.Header>
                     <StackPanel Margin="10">
                         <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Inbox" />
-                        <ListBox IsEnabled="{Binding IsChecked, ElementName=EnableListBox}" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <TextBlock Text="Plain" />
-                            <TextBlock Text="Old" />
-                            <TextBlock Text="ListBox" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                            <TextBlock Text="Full of junk" />
-                        </ListBox>
-                        <!--<TextBlock>
+                        <ListBox Name="listbox_folders"/>
+
+
+                        --><!--<TextBlock>
                             <Run Text="Here will be all incoming messages" />
                             <LineBreak />
                             <LineBreak />
                             --><!--<Run FontStyle="Italic">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>--><!--
-                        </TextBlock>-->
+                        </TextBlock>--><!--
                     </StackPanel>
                 </TabItem>
-                <TabItem>
+                <TabItem Name="tabitem_Sended" MouseDown="tabitem_Sended_MouseDown">
                     <TabItem.Header>
                         <StackPanel Width="auto" Height="auto">
                             <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Send" />
@@ -85,12 +66,7 @@
                     </TabItem.Header>
                     <StackPanel Margin="16">
                         <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Sended messages" />
-                        <TextBlock>
-                            <Run Text="tab 2 content. Default look and behaviors." />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run FontStyle="Italic">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>
-                        </TextBlock>
+                        <ListBox Name="listbox_Sended_Messages" DisplayMemberPath="Subject" ItemsSource="{Binding}" SelectedValuePath="Id"/>
                     </StackPanel>
                 </TabItem>
                 <TabItem>
@@ -123,11 +99,11 @@
                             <Run Text="Here will be deleted messages." />
                             <LineBreak />
                             <LineBreak />
-                            <!--<Run FontStyle="Italic"> Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>-->
+                            --><!--<Run FontStyle="Italic"> Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>--><!--
                         </TextBlock>
                     </StackPanel>
                 </TabItem>
             </TabControl>
-        </materialDesign:Card>
+        </materialDesign:Card>-->
     </Grid>
 </Window>
