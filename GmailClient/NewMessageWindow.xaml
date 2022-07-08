@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GmailClient"
         mc:Ignorable="d"
-        Title="NewMessageWindow"
+        Title="New message"
         Height="450" Width="800"
+        MinHeight="350" MinWidth="400"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -16,15 +17,63 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Icon="/Resources/gmail-icon.png">
-    <!--<UniformGrid Rows="3" Columns="1">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <materialDesign:Card Background="{DynamicResource MaterialDesignBodyLight}"
                              Foreground="{DynamicResource MaterialDesignCardBackground}"
-                             Width="Auto" Height="10"
-                             VerticalAlignment="Top">
-            <TextBlock FontSize="16" Text="New message" />
+                             Width="Auto"
+                             Grid.Row="0" Grid.Column="0">
+            <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Text="NEW MESSAGE" />
         </materialDesign:Card>
-    </UniformGrid>-->
-    <DockPanel>
+        <TextBox Name="txtboxToWhom"
+                 Grid.Row="1" Grid.Column="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 VerticalAlignment="Top"
+                 AcceptsReturn="False"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="To whom"/>
+        <TextBox Name="txtboxTheme"
+                 Grid.Row="2" Grid.Column="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 VerticalAlignment="Top"
+                 AcceptsReturn="False"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="Theme"/>
+        <TextBox Name="txtboxFromWhom"
+                 Grid.Row="3" Grid.Column="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 VerticalAlignment="Top"
+                 AcceptsReturn="False"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="From whom"/>
+        <TextBox Name="txtboxBody"
+                 Grid.Row="4" Grid.Column="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 AcceptsReturn="True"
+                 Height="Auto" Width="Auto"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="Message"/>
+        <Button Name="button_Send"
+                Grid.Row="5" Grid.Column="0"
+                Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                Margin="5" Click="button_Send_Click">
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="Send"/>
+        </Button>
+    </Grid>
+    <!--<DockPanel LastChildFill="False">
         <materialDesign:Card Background="{DynamicResource MaterialDesignBodyLight}"
                              Foreground="{DynamicResource MaterialDesignCardBackground}"
                              Width="Auto" Height="35"
@@ -38,35 +87,22 @@
                  DockPanel.Dock="Top"
                  Style="{StaticResource MaterialDesignFilledTextBox}"
                  VerticalAlignment="Top"
-                 AcceptsReturn="True"
+                 AcceptsReturn="False"
                  TextWrapping="WrapWithOverflow"
                  materialDesign:HintAssist.Hint="To whom"/>
         <TextBox Name="txtboxTheme"
                  DockPanel.Dock="Top"
                  Style="{StaticResource MaterialDesignFilledTextBox}"
                  VerticalAlignment="Top"
-                 AcceptsReturn="True"
+                 AcceptsReturn="False"
                  TextWrapping="WrapWithOverflow"
                  materialDesign:HintAssist.Hint="Theme"/>
-        <!--TODO: зменшини відступ в рядках-->
-        <RichTextBox AcceptsReturn="True"
-                     IsDocumentEnabled="True"
-                     VerticalScrollBarVisibility="Auto"
-                     SpellCheck.IsEnabled="True"
-                     materialDesign:HintAssist.Hint="Multiline text"
-                     Height="Auto" Cursor="Arrow">
-            <FlowDocument>
-                <Paragraph>
-                    <Run FontWeight="Bold">
-                        Rich Text Box.
-                    </Run>
-                    <LineBreak />
-                    <Run FontStyle="Italic">
-                        With formatting support
-                    </Run>
-                    <LineBreak />
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-    </DockPanel>
+        <TextBox Name="txtboxBody"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 AcceptsReturn="True"
+                 Height="Auto" Width="Auto"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="Message"/>
+        <Button DockPanel.Dock="Bottom" Width="Auto" Content="Asdasdasdasd"/>
+    </DockPanel>-->
 </Window>
