@@ -35,6 +35,8 @@ namespace GmailClient
         private string username;
         private string password;
 
+        // Amount of messages that will be downloaded (this counter for pagination)
+        public int messagesPerPage = 5;
 
         public MainWindow(string _username, string _password)
         {
@@ -44,10 +46,9 @@ namespace GmailClient
             username = _username;
             password = _password;
 
-            // retriving mail folders and store them into folders_listbox
-            //RetriveFolders();
-            RetriveAllMessages();
-            //GetMeassges();
+            // Retriving all messages 
+            RetriveMessages();
+            textbox_messages_per_page.Text = messagesPerPage.ToString();
         }
 
         //public async void RetriveFolders()
@@ -74,87 +75,6 @@ namespace GmailClient
         //        await client.DisconnectAsync(true);
         //    }
         //}
-
-
-        #region [ Retrivering email messages ]
-        private async void RetriveAllMessages()
-        {
-            using (var client = new ImapClient())
-            {
-                // Connecting by given port and server
-                await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
-                // Try authenticate and do some magic
-                try
-                {
-                    await client.AuthenticateAsync(username, password);
-                    // Get folder with all messages(INBOX all messages)
-                    var folder = client.GetFolder(SpecialFolder.All);
-                    // Open selected folder
-                    await folder.OpenAsync(FolderAccess.ReadOnly);
-                    // Get messages ids in array
-                    var uids = folder.Search(SearchQuery.All);
-                    // Get messages total count
-                    int messagesCount = uids.Count - 1;
-                    // Amount of messages that will be downloaded (this counter for pagination)
-                    int messagesPerPage = 2;
-                    // Create collection for storing messages
-                    List<EmailListData> emailist = new List<EmailListData>();
-                    // Download given amount of messages and store them to collection
-                    for (int i = messagesCount; i > messagesCount - messagesPerPage; i--)
-                    {
-                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject });
-                    }
-                    // Set items source for listbox
-                    listbox_inbox_messages.ItemsSource = emailist.AsEnumerable();
-                }
-                // Catch errors if got exceptions
-                catch (AuthenticationException ex)
-                {
-                    MessageBox.Show($"{ex.Message}", "Authentication error");
-                }
-                finally
-                {
-                    await client.DisconnectAsync(true);
-                }
-            }
-        }
-
-        private async void GetMeassges()
-        {
-            using (var client = new ImapClient())
-            {
-                await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
-                try
-                {
-                    await client.AuthenticateAsync(username, password);
-                    var folder = await client.GetFolderAsync("INBOX");
-                    // Open selected folder
-                    await folder.OpenAsync(FolderAccess.ReadOnly);
-
-                    //var uids = client.Inbox.Search(SearchQuery.All);
-                    //var messages = uids.Select(x => client.Inbox.GetMessage(x));
-                    //var sortedMessages = messages.OrderByDescending(x => x.Date);
-
-                    var lastMessages = Enumerable.Range(client.Inbox.Count - 3, 3).ToList();
-                    var messages = client.Inbox.Fetch(lastMessages, MessageSummaryItems.UniqueId);
-                    foreach (var message in messages)
-                    {
-                        MessageBox.Show(message.TextBody.ToString(), "Message");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "ERROR");
-                    throw;
-                }
-                finally
-                {
-                    await client.DisconnectAsync(true);
-                }
-            }
-        }
-        #endregion
-
         //private async void OpenMessage(object sender, MouseButtonEventArgs e)
         //{
         //    using (var client = new ImapClient())
@@ -192,7 +112,7 @@ namespace GmailClient
         //        }
         //        await client.DisconnectAsync(true);
         //    }
-        //}
+        //}        
 
         #region [ Menu items handlers ]
         private void menuitem_new_message_Click(object sender, RoutedEventArgs e)
@@ -214,7 +134,125 @@ namespace GmailClient
         {
             MessageBox.Show("ABOUT INFO HERE!");
         }
+        private void menuitem_refresh_Click(object sender, RoutedEventArgs e)
+        {
+            RetriveMessages();
+        }
         #endregion
+
+        #region [ Retrivering messages ]
+        private async void RetriveAllMessages()
+        {
+            using (var client = new ImapClient())
+            {
+                // Connecting by given port and server
+                await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
+                // Try authenticate and do some magic
+                try
+                {
+                    await client.AuthenticateAsync(username, password);
+                    // Get folder with all messages
+                    var folder = client.GetFolder(SpecialFolder.All);
+                    // Open selected folder
+                    await folder.OpenAsync(FolderAccess.ReadOnly);
+                    // Get messages ids in array
+                    var uids = folder.Search(SearchQuery.All);
+                    // Get messages total count
+                    int messagesCount = uids.Count - 1;
+                    // Create collection for storing messages
+                    List<EmailListData> emailist = new List<EmailListData>();
+                    // Download given amount of messages and store them to collection mails
+                    for (int i = messagesCount; i > messagesCount - messagesPerPage; i--)
+                    {
+                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject });
+                    }
+                    // Set items source for listbox
+                    listbox_all_messages.ItemsSource = emailist.AsEnumerable();
+                }
+                // Catch errors if got exceptions
+                catch (AuthenticationException ex)
+                {
+                    MessageBox.Show($"{ex.Message}", "Authentication error");
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
+        }
+        private async void RetriveSendedMessages()
+        {
+            using (var client = new ImapClient())
+            {
+                // Connecting by given port and server
+                await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
+                // Try authenticate and do some magic
+                try
+                {
+                    await client.AuthenticateAsync(username, password);
+                    // Get folder with all sended messages
+                    var folder = client.GetFolder(SpecialFolder.Sent);
+                    // Open selected folder
+                    await folder.OpenAsync(FolderAccess.ReadOnly);
+                    // Get messages ids in array
+                    var uids = folder.Search(SearchQuery.All);
+                    // Get messages total count
+                    int messagesCount = uids.Count - 1;
+                    // Create collection for storing messages
+                    List<EmailListData> emailist = new List<EmailListData>();
+                    // Download given amount of messages and store them to collection mails
+                    for (int i = messagesCount; i > messagesCount - messagesPerPage; i--)
+                    {
+                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject });
+                    }
+                    // Set items source for listbox
+                    listbox_sended_messages.ItemsSource = emailist.AsEnumerable();
+                }
+                // Catch errors if got exceptions
+                catch (AuthenticationException ex)
+                {
+                    MessageBox.Show($"{ex.Message}", "Authentication error");
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
+        }
+        #endregion
+
+        #region [ Updating data ]
+        private void RetriveMessages()
+        {
+            //statusbaritem_update_status.Content = "Updating...";
+            RetriveAllMessages();
+            RetriveSendedMessages();
+            textbox_last_update_time.Text = $"{DateTime.Now}";
+            //statusbaritem_update_status.Content = $"Updated: {DateTime.Now}";
+        }
+        #endregion
+
+        private void textbox_messages_per_page_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(textbox_messages_per_page.Text != null && textbox_messages_per_page.Text != "")
+            {
+                var isNumeric = int.TryParse(textbox_messages_per_page.Text, out int n);
+                if (isNumeric)
+                {
+                    messagesPerPage = n;
+                    RetriveMessages();
+                }
+                else
+                {
+                    MessageBox.Show("Only numbers!");
+                    textbox_messages_per_page.Text = messagesPerPage.ToString();
+                }
+            }
+            if(textbox_messages_per_page.Text != "")
+            {
+                textbox_messages_per_page.Text = messagesPerPage.ToString();
+            }
+        }
     }
 
     /// <summary>
