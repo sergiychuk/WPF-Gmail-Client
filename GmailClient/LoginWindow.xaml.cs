@@ -31,16 +31,12 @@ namespace GmailClient
 
         private readonly string username = "dspeakers8@gmail.com";
         private readonly string password = "xgafnlmijfgputgr";
-        private bool autoFill = true;  // Вимкни цей флаг що б відключити автозаповнення данних!!!!
+        private bool autoFill = true;  // Turning off this flag will turn off autofill credentials
 
         public LoginWindow()
         {
             InitializeComponent();
-
-            if (autoFill)
-            {
-                AutoSetCredentials();
-            }
+            if (autoFill) AutoSetCredentials();
         }
 
         public void AutoSetCredentials()
@@ -51,63 +47,45 @@ namespace GmailClient
 
         private async void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
-            //using (var client = new ImapClient(new ProtocolLogger("imap.log")))
             using (var client = new ImapClient())
             {
-                // Асинхронне підключення клієнта із заданим сервером і портом
+                // Asynchronous connection of the client with the specified server and port
                 await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
-                
-                // Спробуємо асинхронно автентифікуватися по введеним логіну і паролю
+
+                // Try to asynchronously authenticate using the login and password entered by the user
                 try
                 {
-                    //client.Authenticate(txtboxUsername.Text, txtboxPassword.Password);
                     await client.AuthenticateAsync(txtboxUsername.Text, txtboxPassword.Password);
 
-                    // Якщо успішна автентифікація то передаємо дані для логіну у вікно MainWindow і запускаскаємо його закривши це вікно
+                    // If the authentication is successful, transfer the login data to the MainWindow window and start it
                     if (client.IsAuthenticated)
                     {
+                        // Create MainWindow object
                         MainWindow mainWindow = new MainWindow(txtboxUsername.Text, txtboxPassword.Password);
-                        // Відключення клієнта
-                        await client.DisconnectAsync(true);
+                        // Open Mainwindow with given credentials for login
                         mainWindow.Show();
+                        // Disconnecting client
+                        await client.DisconnectAsync(true);
+                        // Close LoginWindow
                         this.Close();
                     }
-
+                    #region [ DEBUG ]
                     //var all = StatusItems.Recent;
                     //var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
                     //foreach (var folder in folders)
                     //{
                     //    MessageBox.Show($"{folder.FullName}");
                     //}
-
-                    //var uids = client.Inbox.Search(SearchQuery.All);
-                    //var messages = uids.Select(x=>client.Inbox.GetMessage(x));
-                    //var sortedMessages = messages.OrderByDescending(x => x.Date);
-
-                    ///////////////////////////// [ DEBUGGING ] /////////////////////////////
-                    //StringBuilder stringBuilder = new StringBuilder();
-                    //var all = StatusItems.Recent;
-                    //var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
-
-
-                    //MessageBox.Show(stringBuilder.ToString(), "MESSAGES");
-
-
-                    //foreach (var item in client.GetFolders(client.PersonalNamespaces[0]))
-                    //foreach (var item in await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true))
-                    //{
-                    //    stringBuilder.AppendLine(item.Name);
-                    //}
-                    ///////////////////////////// [ DEBUGGING ] /////////////////////////////
+                    #endregion
                 }
-                // Ловимо помилку при невдалому підключенні
                 catch (AuthenticationException ex)
                 {
                     MessageBox.Show($"{ex.Message}", "Authentication error");
                 }
-
-                // Відключення клієнта
-                //await client.DisconnectAsync(true);
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
             }
         }
     }
