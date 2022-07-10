@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GmailClient"
         mc:Ignorable="d"
         Title="User Login"
-        Height="180" Width="400"
+        Height="170" Width="400"
         ResizeMode="NoResize"
         Icon="/Resources/gmail-icon.png"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -17,37 +17,29 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignBackground}"
         FontFamily="{DynamicResource MaterialDesignFont}">
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Margin="5" >
-            <!--<TextBox Style="{StaticResource MaterialDesignFilledTextBox}"
-                     Name="txtboxPassword"                    
+    <DockPanel LastChildFill="False">
+        <TextBox DockPanel.Dock="Top"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 Name="txtboxUsername"                    
+                 VerticalAlignment="Top"
+                 TextWrapping="Wrap"
+                 materialDesign:HintAssist.Hint="Username"/>
+        <PasswordBox DockPanel.Dock="Top"
+                     Style="{StaticResource MaterialDesignFilledPasswordBox}"
+                     Name="txtboxPassword"
                      VerticalAlignment="Top"
-                     TextWrapping="Wrap"
                      materialDesign:HintAssist.Hint="Password"
-                     Text="{Binding Password}"/>-->
-            <!--Username field-->
-            <TextBox Style="{StaticResource MaterialDesignFilledTextBox}"
-                     Name="txtboxUsername"                    
-                     VerticalAlignment="Top"
-                     TextWrapping="Wrap"
-                     materialDesign:HintAssist.Hint="Username"/>
-            <!--Password field-->
-            <PasswordBox Style="{StaticResource MaterialDesignFilledPasswordBox}"
-                         Name="txtboxPassword"
-                         VerticalAlignment="Top"
-                         materialDesign:HintAssist.Hint="Password"
-                         materialDesign:TextFieldAssist.HasClearButton="True"
-                         Cursor="Arrow"/>
-            <!--Login button-->
-            <Button Style="{StaticResource MaterialDesignFlatMidBgButton}"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth3"
-                    Name="buttonLogin"
-                    Margin="0,7,0,0"
-                    Width="Auto"
-                    Click="buttonLogin_Click" Cursor="Hand"
-                    IsTabStop="False">
-                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="Login to Gmail"/>
-            </Button>
-        </StackPanel>
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     Cursor="Arrow"/>
+        <Button DockPanel.Dock="Top"
+                Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                Name="buttonLogin"
+                Margin="5"
+                Width="Auto"
+                Click="buttonLogin_Click" Cursor="Hand"
+                IsTabStop="False">
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="Login to Gmail"/>
+        </Button>
     </DockPanel>
 </Window>
