@@ -27,11 +27,11 @@ namespace GmailClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        // Витягуємо з конфігу порт і сервер
+        // port and server retrivering from App.config
         string server = ConfigurationManager.AppSettings["gmail_server"]; // витягуєм з конфіга адресу сервера
         int port = int.Parse(ConfigurationManager.AppSettings["gmail_port"]); // витягуєм з конфігу порт для підключення
 
-        // логін і пароль для логіна в сервіс Gmail(передається з логін вінка)
+        // credentials for login in gmail services (retrivering from LoginWindow)
         private string username;
         private string password;
 
@@ -40,113 +40,189 @@ namespace GmailClient
         {
             InitializeComponent();
 
-            // встановлення логіну і паролю отриманого з логін вікна
+            // set login credentials
             username = _username;
             password = _password;
 
-            // ОТримоэмо список папок і записуємо їх в лістбокс folders_listbox
-            RetriveFolders();
+            // retriving mail folders and store them into folders_listbox
+            //RetriveFolders();
+            RetriveAllMessages();
+            //GetMeassges();
         }
 
-        public async void RetriveFolders()
-        {
-            using(var client = new ImapClient())
-            {
-                // Асинхронне підключення клієнта із заданим сервером і портом
-                await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
-                try
-                {
-                    await client.AuthenticateAsync(username, password);
-                    var all = StatusItems.Recent;
-                    var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
-                    foreach (var folder in folders)
-                    {
-                        listbox_folders.Items.Add(folder.FullName);
-                    }
-                }
-                // Ловимо помилку при невдалому підключенні
-                catch (AuthenticationException ex)
-                {
-                    MessageBox.Show($"{ex.Message}", "Authentication error");
-                }
-                await client.DisconnectAsync(true);
-            }
-        }
-        private async void RetriveMessages(object sender, MouseButtonEventArgs e)
+        //public async void RetriveFolders()
+        //{
+        //    using(var client = new ImapClient())
+        //    {
+        //        // Асинхронне підключення клієнта із заданим сервером і портом
+        //        await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
+        //        try
+        //        {
+        //            await client.AuthenticateAsync(username, password);
+        //            var all = StatusItems.Recent;
+        //            var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0], all, true);
+        //            foreach (var folder in folders)
+        //            {
+        //                //listbox_folders.Items.Add(folder.FullName);
+        //            }
+        //        }
+        //        // Ловимо помилку при невдалому підключенні
+        //        catch (AuthenticationException ex)
+        //        {
+        //            MessageBox.Show($"{ex.Message}", "Authentication error");
+        //        }
+        //        await client.DisconnectAsync(true);
+        //    }
+        //}
+
+
+        #region [ Retrivering email messages ]
+        private async void RetriveAllMessages()
         {
             using (var client = new ImapClient())
             {
-                // Асинхронне підключення клієнта із заданим сервером і портом
+                // Connecting by given port and server
                 await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
+                // Try authenticate and do some magic
                 try
                 {
                     await client.AuthenticateAsync(username, password);
-                    // Вибираємо папку з лістбокса
-                    var folder = await client.GetFolderAsync(((ListBox)sender).SelectedItem.ToString());
-                    // Відкриваємо обрану папку
+                    // Get folder with all messages(INBOX all messages)
+                    var folder = client.GetFolder(SpecialFolder.All);
+                    // Open selected folder
                     await folder.OpenAsync(FolderAccess.ReadOnly);
-                    // Колекція листів
+                    // Get messages ids in array
+                    var uids = folder.Search(SearchQuery.All);
+                    // Get messages total count
+                    int messagesCount = uids.Count - 1;
+                    // Amount of messages that will be downloaded (this counter for pagination)
+                    int messagesPerPage = 2;
+                    // Create collection for storing messages
                     List<EmailListData> emailist = new List<EmailListData>();
-                    int i = 0;
-                    foreach (var item in folder)
+                    // Download given amount of messages and store them to collection
+                    for (int i = messagesCount; i > messagesCount - messagesPerPage; i--)
                     {
-                        emailist.Add(new EmailListData { Id = item.MessageId, Subject = item.Subject });
-                        if (i < 10) i++;
-                        else break;
+                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject });
                     }
-                    listbox_messages.ItemsSource = emailist.AsEnumerable();
+                    // Set items source for listbox
+                    listbox_inbox_messages.ItemsSource = emailist.AsEnumerable();
                 }
-                // Ловимо помилку при невдалому підключенні
+                // Catch errors if got exceptions
                 catch (AuthenticationException ex)
                 {
                     MessageBox.Show($"{ex.Message}", "Authentication error");
                 }
-                await client.DisconnectAsync(true);
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
             }
         }
 
-        private async void OpenMessage(object sender, MouseButtonEventArgs e)
+        private async void GetMeassges()
         {
             using (var client = new ImapClient())
             {
-                // Асинхронне підключення клієнта із заданим сервером і портом
                 await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
                 try
                 {
                     await client.AuthenticateAsync(username, password);
-
-                    var messageid = ((EmailListData)((ListBox)sender).SelectedItem).Id;
-
-                    // Вибираємо папку з лістбокса
-                    var folder = await client.GetFolderAsync(listbox_folders.SelectedItem.ToString());
-                    // Відкриваємо обрану папку
+                    var folder = await client.GetFolderAsync("INBOX");
+                    // Open selected folder
                     await folder.OpenAsync(FolderAccess.ReadOnly);
-                    var message = folder.First(m => m.MessageId == messageid);
 
-                    string messagebodytxt = message.TextBody;
-                    //if (message.HtmlBody != null)
-                    //{
-                    //    messagebodytxt = message.HtmlBody;
-                    //}
-                    //else
-                    //{
-                    //    messagebodytxt = message.TextBody;
-                    //}
-                    MessageBox.Show(messagebodytxt, "Message text");
+                    //var uids = client.Inbox.Search(SearchQuery.All);
+                    //var messages = uids.Select(x => client.Inbox.GetMessage(x));
+                    //var sortedMessages = messages.OrderByDescending(x => x.Date);
+
+                    var lastMessages = Enumerable.Range(client.Inbox.Count - 3, 3).ToList();
+                    var messages = client.Inbox.Fetch(lastMessages, MessageSummaryItems.UniqueId);
+                    foreach (var message in messages)
+                    {
+                        MessageBox.Show(message.TextBody.ToString(), "Message");
+                    }
                 }
-                // Ловимо помилку при невдалому підключенні
-                catch (AuthenticationException ex)
+                catch (Exception ex)
                 {
-                    MessageBox.Show($"{ex.Message}", "Authentication error");
+                    MessageBox.Show(ex.Message, "ERROR");
+                    throw;
                 }
-                await client.DisconnectAsync(true);
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
             }
         }
+        #endregion
+
+        //private async void OpenMessage(object sender, MouseButtonEventArgs e)
+        //{
+        //    using (var client = new ImapClient())
+        //    {
+        //        // Асинхронне підключення клієнта із заданим сервером і портом
+        //        await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
+        //        try
+        //        {
+        //            await client.AuthenticateAsync(username, password);
+
+        //            var messageid = ((EmailListData)((ListBox)sender).SelectedItem).Id;
+
+        //            // Вибираємо папку з лістбокса
+        //            //var folder = await client.GetFolderAsync(listbox_folders.SelectedItem.ToString());
+
+        //            // Відкриваємо обрану папку
+        //            //await folder.OpenAsync(FolderAccess.ReadOnly);
+        //            //var message = folder.First(m => m.MessageId == messageid);
+
+        //            //string messagebodytxt = message.TextBody;
+        //            //if (message.HtmlBody != null)
+        //            //{
+        //            //    messagebodytxt = message.HtmlBody;
+        //            //}
+        //            //else
+        //            //{
+        //            //    messagebodytxt = message.TextBody;
+        //            //}
+        //            //MessageBox.Show(messagebodytxt, "Message text");
+        //        }
+        //        // Ловимо помилку при невдалому підключенні
+        //        catch (AuthenticationException ex)
+        //        {
+        //            MessageBox.Show($"{ex.Message}", "Authentication error");
+        //        }
+        //        await client.DisconnectAsync(true);
+        //    }
+        //}
+
+        #region [ Menu items handlers ]
+        private void menuitem_new_message_Click(object sender, RoutedEventArgs e)
+        {
+            NewMessageWindow newMessageWindow = new NewMessageWindow(username, password);
+            newMessageWindow.Show();
+        }
+        private void menuitem_logout_Click(object sender, RoutedEventArgs e)
+        {
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+            this.Close();
+        }
+        private void menuitem_exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void menuitem_about_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("ABOUT INFO HERE!");
+        }
+        #endregion
     }
 
+    /// <summary>
+    /// Class for storing email lists data
+    /// </summary>
     public class EmailListData
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Subject { get; set; }
     }
 }
