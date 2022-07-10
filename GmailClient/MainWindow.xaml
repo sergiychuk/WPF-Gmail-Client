@@ -27,40 +27,54 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--[ TOP MENU ]-->
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="_FILE">
                 <MenuItem Name="menuitem_new_message" Header="New message" Icon="{materialDesign:PackIcon Kind=EmailSend}" Click="menuitem_new_message_Click"/>
-                <MenuItem Header="Refresh" Icon="{materialDesign:PackIcon Kind=Refresh}"/>
                 <Separator />
                 <MenuItem Name="menuitem_logout" Header="Loguot"  Icon="{materialDesign:PackIcon Kind=Logout}" Click="menuitem_logout_Click"/>
                 <Separator />
                 <MenuItem Header="Exit" InputGestureText="Ctrl+E" Icon="{materialDesign:PackIcon Kind=ExitToApp}" Click="menuitem_exit_Click"/>
             </MenuItem>
             <MenuItem Header="_OPTIONS">
-                <MenuItem Header="Save As.." />
-                <Separator />
-                <MenuItem Header="Exit" InputGestureText="Ctrl+E" Icon="{materialDesign:PackIcon Kind=ExitToApp}" />
+                <MenuItem Name="menuitem_refresh" Header="Refresh" Icon="{materialDesign:PackIcon Kind=Refresh}" Click="menuitem_refresh_Click"/>
             </MenuItem>
             <MenuItem Name="menuitem_about" Header="_ABOUT" Click="menuitem_about_Click"/>
         </Menu>
 
         <!--[ WINDOW BODY ]-->
         <TabControl Grid.Row="1" materialDesign:ColorZoneAssist.Mode="PrimaryDark" Style="{StaticResource MaterialDesignFilledTabControl}">
-            <TabItem Header="INBOX" Width="Auto">
-                <ListBox Name="listbox_inbox_messages" DisplayMemberPath="Subject" SelectedValuePath="Id"/>
+            <TabItem Header="ALL" Width="Auto">
+                <ListBox Name="listbox_all_messages" DisplayMemberPath="Subject" SelectedValuePath="Id"/>
             </TabItem>
             <TabItem Header="SENDED">
-                <ListBox>
-                    <TextBlock Text="asd"/>
-                    <TextBlock Text="asd"/>
-                    <TextBlock Text="asd"/>
-                </ListBox>
+                <ListBox Name="listbox_sended_messages" DisplayMemberPath="Subject" SelectedValuePath="Id"/>
             </TabItem>
         </TabControl>
-
+        <!--[ WINDOW FOOTER ]-->
+        <StatusBar Grid.Row="2"
+                   Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+                   Foreground="{DynamicResource MaterialDesignLightForeground}">
+            <StatusBarItem Cursor="Arrow">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Name="textbox_messages_per_page"
+                             materialDesign:HintAssist.Hint="Messages per page"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             Padding="0,0,0,0" TextChanged="textbox_messages_per_page_TextChanged"/>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Name="textbox_last_update_time" IsReadOnly="True"
+                             materialDesign:HintAssist.Hint="Updated"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             Padding="0,0,0,0" Cursor="Arrow"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
         <!--region [Old style 2]-->
         <!--<Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*"/>
@@ -71,85 +85,5 @@
                  DisplayMemberPath="Subject" SelectedValuePath="Id"
                  MouseDoubleClick="OpenMessage"/>-->
         <!--endregion [Old style 2]-->
-        <!--region [Old style]-->
-        <!--<materialDesign:Card>
-            <TabControl materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
-                        SnapsToDevicePixels="True"
-                        Style="{StaticResource MaterialDesignNavigationRailTabControl}"
-                        TabStripPlacement="Left">
-                <materialDesign:NavigationRailAssist.FloatingContent>
-                    <Button Margin="8"
-                            Content="{materialDesign:PackIcon Kind=Plus}"
-                            Style="{StaticResource MaterialDesignFloatingActionAccentButton}" />
-                </materialDesign:NavigationRailAssist.FloatingContent>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Width="auto" Height="auto">
-                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Inbox" />
-                            <TextBlock HorizontalAlignment="Center" Text="Inbox" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel Margin="10">
-                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Inbox" />
-                        <ListBox Name="listbox_folders"/>
-
-
-                        <TextBlock>
-                            <Run Text="Here will be all incoming messages" />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run FontStyle="Italic">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>
-                        </TextBlock>
-                    </StackPanel>
-                </TabItem>
-                <TabItem Name="tabitem_Sended" MouseDown="tabitem_Sended_MouseDown">
-                    <TabItem.Header>
-                        <StackPanel Width="auto" Height="auto">
-                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Send" />
-                            <TextBlock HorizontalAlignment="Center" Text="Sended" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel Margin="16">
-                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Sended messages" />
-                        <ListBox Name="listbox_Sended_Messages" DisplayMemberPath="Subject" ItemsSource="{Binding}" SelectedValuePath="Id"/>
-                    </StackPanel>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Width="auto" Height="auto">
-                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="AlertOctagon" />
-                            <TextBlock HorizontalAlignment="Center" Text="Spam" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel Margin="16">
-                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Spam and other trash" />
-                        <TextBlock>
-                            <Run Text="tab 3 content. Default look and behaviors." />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run FontStyle="Italic"> Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>
-                        </TextBlock>
-                    </StackPanel>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Width="auto" Height="auto">
-                            <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Delete" />
-                            <TextBlock HorizontalAlignment="Center" Text="Deleted" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel Margin="16">
-                        <TextBlock Margin="0,0,0,8" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Deleted messages" />
-                        <TextBlock> 
-                            <Run Text="Here will be deleted messages." />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run FontStyle="Italic"> Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Run>
-                        </TextBlock>
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
-        </materialDesign:Card>-->
-        <!--endregion [Old style]-->
     </Grid>
 </Window>
