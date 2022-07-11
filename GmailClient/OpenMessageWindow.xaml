@@ -1,0 +1,80 @@
+﻿<Window x:Class="GmailClient.OpenMessageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GmailClient"
+        mc:Ignorable="d"
+        Title="Read Message"
+        Height="350" Width="600"
+        MinHeight="350" MinWidth="600"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Icon="/Resources/gmail-icon.png">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <materialDesign:Card Background="{DynamicResource MaterialDesignBodyLight}"
+                             Foreground="{DynamicResource MaterialDesignCardBackground}"
+                             Width="Auto"
+                             Grid.Row="0" Grid.Column="0">
+            <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Text="MESSAGE" />
+        </materialDesign:Card>
+        <TextBox Name="txtboxFromWhom" IsReadOnly="True"
+                 Grid.Row="2" Grid.Column="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 VerticalAlignment="Top"
+                 AcceptsReturn="False"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="Sender"/>
+        <TextBox Name="txtboxTheme" IsReadOnly="True"
+                 Grid.Row="3" Grid.Column="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 VerticalAlignment="Top"
+                 AcceptsReturn="False"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="Theme"/>
+        <TextBox Name="txtboxBody" IsReadOnly="True"
+                 Grid.Row="4" Grid.Column="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 AcceptsReturn="True"
+                 Height="Auto" Width="Auto"
+                 TextWrapping="WrapWithOverflow"
+                 materialDesign:HintAssist.Hint="Message"/>
+        <Button Name="button_Delete"
+                Grid.Row="5" Grid.Column="0"
+                    Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                    Margin="5" BorderBrush="#FF670315" Cursor="Hand">
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource MaterialDesignValidationErrorColor}"/>
+            </Button.Background>
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="Delete"/>
+        </Button>
+        <Button Name="button_Close"
+                Grid.Row="6" Grid.Column="0"
+                Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                Margin="5" Click="button_Close_Click">
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="Close"/>
+        </Button>
+    </Grid>
+</Window>
