@@ -13,9 +13,9 @@ namespace GmailClient
         string server = ConfigurationManager.AppSettings["gmail_server"]; // sets the server address
         int port = int.Parse(ConfigurationManager.AppSettings["gmail_port"]); //sets the server port
 
-        private readonly string username = "asdasdasdasdasd@gmail.com"; // paste here your email
-        private readonly string password = "asdasdasdasdasdasd"; // paste here your password 
-        private bool autoFill = false;  // Turning off this flag will turn off autofill credentials
+        private readonly string username = "dspeakers8@gmail.com"; // paste here your email
+        private readonly string password = "xgafnlmijfgputgr"; // paste here your password 
+        private bool autoFill = true;  // Turning off this flag will turn off autofill credentials
 
         public LoginWindow()
         {

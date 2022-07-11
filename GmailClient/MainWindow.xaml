@@ -48,7 +48,7 @@
         <!--[ WINDOW BODY ]-->
         <TabControl Grid.Row="1" materialDesign:ColorZoneAssist.Mode="PrimaryDark" Style="{StaticResource MaterialDesignFilledTabControl}">
             <TabItem Header="ALL" Width="Auto">
-                <ListBox Name="listbox_all_messages" DisplayMemberPath="Subject" SelectedValuePath="Id"/>
+                <ListBox Name="listbox_all_messages" DisplayMemberPath="Subject" SelectedValuePath="Id" MouseDoubleClick="OpenMessage" />
             </TabItem>
             <TabItem Header="SENDED">
                 <ListBox Name="listbox_sended_messages" DisplayMemberPath="Subject" SelectedValuePath="Id"/>

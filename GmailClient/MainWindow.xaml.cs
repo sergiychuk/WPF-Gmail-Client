@@ -75,44 +75,50 @@ namespace GmailClient
         //        await client.DisconnectAsync(true);
         //    }
         //}
-        //private async void OpenMessage(object sender, MouseButtonEventArgs e)
-        //{
-        //    using (var client = new ImapClient())
-        //    {
-        //        // Асинхронне підключення клієнта із заданим сервером і портом
-        //        await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
-        //        try
-        //        {
-        //            await client.AuthenticateAsync(username, password);
+        private async void OpenMessage(object sender, MouseButtonEventArgs e)
+        {
+            using (var client = new ImapClient())
+            {
+                // Асинхронне підключення клієнта із заданим сервером і портом
+                await client.ConnectAsync(server, port, SecureSocketOptions.SslOnConnect);
+                try
+                {
+                    await client.AuthenticateAsync(username, password);
 
-        //            var messageid = ((EmailListData)((ListBox)sender).SelectedItem).Id;
+                    var messageid = ((EmailListData)((ListBox)sender).SelectedItem).Id;
+                    string folderName = ((EmailListData)((ListBox)sender).SelectedItem).Folder;
 
-        //            // Вибираємо папку з лістбокса
-        //            //var folder = await client.GetFolderAsync(listbox_folders.SelectedItem.ToString());
+                    // Вибираємо папку з лістбокса
+                    var folder = client.GetFolder(folderName);
 
-        //            // Відкриваємо обрану папку
-        //            //await folder.OpenAsync(FolderAccess.ReadOnly);
-        //            //var message = folder.First(m => m.MessageId == messageid);
+                    // Відкриваємо обрану папку
+                    await folder.OpenAsync(FolderAccess.ReadOnly);
+                    //var message = folder.First(m => m.MessageId == messageid.ToString());
+                    var message = folder.GetMessage(messageid);
+                    string messageTheme = message.Subject;
+                    string messageSender = message.Sender.Name;
 
-        //            //string messagebodytxt = message.TextBody;
-        //            //if (message.HtmlBody != null)
-        //            //{
-        //            //    messagebodytxt = message.HtmlBody;
-        //            //}
-        //            //else
-        //            //{
-        //            //    messagebodytxt = message.TextBody;
-        //            //}
-        //            //MessageBox.Show(messagebodytxt, "Message text");
-        //        }
-        //        // Ловимо помилку при невдалому підключенні
-        //        catch (AuthenticationException ex)
-        //        {
-        //            MessageBox.Show($"{ex.Message}", "Authentication error");
-        //        }
-        //        await client.DisconnectAsync(true);
-        //    }
-        //}        
+                    string messagebodytxt;
+                    if (message.HtmlBody != null)
+                    {
+                        messagebodytxt = message.HtmlBody;
+                    }
+                    else
+                    {
+                        messagebodytxt = message.TextBody;
+                    }
+                    OpenMessageWindow openMessageWindow = new OpenMessageWindow(messageSender, messageTheme, messagebodytxt);
+                    openMessageWindow.Show();
+                    //MessageBox.Show(messagebodytxt, "Message text");
+                }
+                // Ловимо помилку при невдалому підключенні
+                catch (AuthenticationException ex)
+                {
+                    MessageBox.Show($"{ex.Message}", "Authentication error");
+                }
+                await client.DisconnectAsync(true);
+            }
+        }
 
         #region [ Menu items handlers ]
         private void menuitem_new_message_Click(object sender, RoutedEventArgs e)
@@ -164,7 +170,7 @@ namespace GmailClient
                     // Download given amount of messages and store them to collection mails
                     for (int i = messagesCount; i > messagesCount - messagesPerPage; i--)
                     {
-                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject });
+                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject, Folder = folder.FullName });
                     }
                     // Set items source for listbox
                     listbox_all_messages.ItemsSource = emailist.AsEnumerable();
@@ -203,7 +209,7 @@ namespace GmailClient
                     // Download given amount of messages and store them to collection mails
                     for (int i = messagesCount; i > messagesCount - messagesPerPage; i--)
                     {
-                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject });
+                        emailist.Add(new EmailListData { Id = i, Subject = folder.GetMessage(i).Subject, Folder = folder.FullName });
                     }
                     // Set items source for listbox
                     listbox_sended_messages.ItemsSource = emailist.AsEnumerable();
@@ -221,6 +227,10 @@ namespace GmailClient
         }
         #endregion
 
+        #region [ Opening messages ]
+
+        #endregion
+
         #region [ Updating data ]
         private void RetriveMessages()
         {
@@ -232,6 +242,7 @@ namespace GmailClient
         }
         #endregion
 
+        #region [ StatusBar items handlers ]
         private void textbox_messages_per_page_TextChanged(object sender, TextChangedEventArgs e)
         {
             if(textbox_messages_per_page.Text != null && textbox_messages_per_page.Text != "")
@@ -253,6 +264,12 @@ namespace GmailClient
                 textbox_messages_per_page.Text = messagesPerPage.ToString();
             }
         }
+        #endregion
+
+        private void listbox_all_messages_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            
+        }
     }
 
     /// <summary>
@@ -262,5 +279,6 @@ namespace GmailClient
     {
         public int Id { get; set; }
         public string Subject { get; set; }
+        public string Folder { get; set; }
     }
 }
